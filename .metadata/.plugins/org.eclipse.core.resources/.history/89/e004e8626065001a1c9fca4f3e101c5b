@@ -1,0 +1,168 @@
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.lang.Math; 
+public class Matrix 
+{
+	private int pac_x;
+	private int pac_y;
+	private boolean game;
+	private int counter;
+	private  int [][] place;
+	private int small_x;
+	private int small_y;
+	private int health;
+	public Matrix(int y,int x)
+	{
+		pac_x=1;
+		pac_y=1;
+		game=true;
+		health=3;
+		counter=0;
+		this.small_x=31;
+		this.small_y=28;
+		this.place=new int[this.small_y][this.small_x];
+		init();
+	}
+
+	public boolean isGame() {
+		return game;
+	}
+
+	public void setGame(boolean game) {
+		this.game = game;
+	}
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
+
+	public int[][] getPlace() {
+		return place;
+	}
+
+	public void setPlace(int[][] place) {
+		this.place = place;
+	}
+
+	public int getSmall_x() {
+		return small_x;
+	}
+
+	public int getPac_x() {
+		return pac_x;
+	}
+
+	public int getPac_y() {
+		return pac_y;
+	}
+
+	public void setSmall_x(int small_x) {
+		this.small_x = small_x;
+	}
+
+	public int getSmall_y() {
+		return small_y;
+	}
+
+	public void setSmall_y(int small_y) {
+		this.small_y = small_y;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public void init()
+	{
+   		int [][]amir= {
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+				{1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}	};
+		this.place=amir;
+	}
+	
+
+	
+	public boolean getwall(int y_left,int x_left,int y_right,int x_right )//(left,right)
+	{
+
+		if(this.place[get_place(y_left)][get_place(x_left)]==1)return false;
+		if(this.place[get_place(y_right)][get_place(x_right)]==1)return false; 
+		return true;  // true =no wall 
+	}
+	public boolean get_ghost(int x,int y)
+	{
+		if(this.health<=0) {this.game=false;}
+		if(this.place[get_place(y)][get_place(x)]==4) {this.health=this.health-1; return false;}
+		if(this.place[get_place(y+19)][get_place(x+19)]==4) {this.health=this.health-1;return false;}
+		if(this.place[get_place(y+19)][get_place(x)]==4) {this.health=this.health-1;return false;}
+		if(this.place[get_place(y)][get_place(x+19)]==4) {this.health=this.health-1;return false;}
+		return true; // true = no ghost
+	}
+	public void update_location(int x_pac,int y_pac )
+	{
+		this.pac_x=get_place(x_pac);
+		this.pac_y=get_place(y_pac);
+		if(this.place[get_place(y_pac)][get_place(x_pac)]==0)counter++;
+		this.place[get_place(y_pac)][get_place(x_pac)]=3; // 5 empty place 4 ghost 3 pacman 0 food
+	}
+	
+	public void update_ghost_location(int x_ghost,int y_ghost,int xpre_ghost,int ypre_ghost )
+	{
+		this.place[get_place(ypre_ghost)][get_place(xpre_ghost )]=0;
+		this.place[get_place(y_ghost)][get_place(x_ghost)]=4;
+		
+	}
+	
+	
+	public void update_empty_place(int x,int y)
+	{
+		this.place[get_place(y)][get_place(x)]=5;
+	}
+	
+	public int get_place(int x)
+	{
+		//float siz_x=((float)(x)/20);
+		//int int_x=(int)(siz_x);
+		return x/20;
+	}
+
+	
+
+}

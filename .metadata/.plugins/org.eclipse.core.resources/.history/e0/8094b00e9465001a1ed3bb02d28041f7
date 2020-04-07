@@ -1,0 +1,228 @@
+
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.IOException;
+import javax.swing.ImageIcon;
+
+public class Ghost extends Thread {
+
+	private int time;
+	private Matrix My_matrix;
+	private Boolean right, left, up, down, game;
+	private Mypanel p;
+	private int x;
+	private int y;
+	private Image icon;
+	private Image left_image;
+	private Image up_image;
+	private Image down_image;
+	private Image right_image;
+
+	public Ghost(int y, int x, Matrix my_matrix, Mypanel p) throws IOException {
+		this.time = 50;
+		this.p = p;
+		this.My_matrix = my_matrix;
+		this.x = x;
+		this.y = y;
+		this.right_image = new ImageIcon("ghost_right.jpg").getImage();
+		this.left_image = new ImageIcon("ghost_right.jpg").getImage();
+		this.up_image = new ImageIcon("ghost_up.jpg").getImage();
+		this.down_image = new ImageIcon("ghost_down.jpg").getImage();
+		this.icon = right_image;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	private void up() {
+		for (int i = 0; i < 20; i++) {
+			y++;
+			My_matrix.update_ghost_location(this.x, this.y, this.x, this.y - 1);
+			try {
+				Thread.sleep(this.time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void down() {
+		for (int i = 0; i < 20; i++) {
+			y--;
+			My_matrix.update_ghost_location(this.x, this.y, this.x, this.y + 1);
+			try {
+				Thread.sleep(this.time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void right() {
+		for (int i = 0; i < 20; i++) {
+			x++;
+			My_matrix.update_ghost_location(this.x, this.y, this.x - 1, this.y);
+			try {
+				Thread.sleep(this.time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	private void left() {
+		for (int i = 0; i < 20; i++) {
+
+			x--;
+			My_matrix.update_ghost_location(this.x, this.y, this.x + 1, this.y);
+			try {
+				Thread.sleep(this.time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void draw(Graphics g)// repaint()
+	{
+		g.drawImage(this.icon, this.x, this.y, 20, 20, p);
+	}
+
+	public int findNextAction(int x, int y, int depth, int x0, int y0) {
+		int visited[][] = new int[4][4];
+		visited[0][0] = 1;
+
+		int dpt = depth - 1;
+		int j = -1;
+		int score[] = { 1000, 1000, 1000, 1000 };
+		int min = 1000;
+
+		if (this.My_matrix.getwall(y, x + 20, y + 19, x + 20)) {
+			score[0] = minScore(x + 20, y, dpt);
+		}
+		if (this.My_matrix.getwall(y, x - 1, y + 19, x - 1)) {
+			score[1] = minScore(x - 20, y, dpt);
+		}
+		if (this.My_matrix.getwall(y - 1, x, y, x + 19)) {
+			score[2] = minScore(x, y - 20, dpt);
+		}
+		if (this.My_matrix.getwall(y + 20, x, y + 20, x + 19)) {
+			score[3] = minScore(x, y + 20, dpt);
+		}
+
+		for (int i = 0; i < 4; i++) {
+			if (score[i] < min) {
+				min = score[i];
+				j = i;
+			}
+		}
+		return j;
+
+	}
+
+	public int minScore(int x, int y, int depth, int visited[][], int x0, int y0) {
+		
+		int dx = (x-x0)/20 + 3;
+		int dy = (y-y0)/20 + 3;
+		
+		visited[dx+3][dy+3] = 1;
+		if (this.My_matrix.get_place(x) == this.My_matrix.getPac_x()
+				&& this.My_matrix.get_place(y) == this.My_matrix.getPac_y()) {
+			return (-1000 - depth * 10);
+		}
+
+		/*
+		 * if(Math.abs(new_x - this.My_matrix.getPac_x()) + Math.abs(new_y -
+		 * this.My_matrix.getPac_y()) < 1){ return -1000; }
+		 */
+
+		if (depth == 0) {
+			int new_x = this.My_matrix.get_place(x);
+			int new_y = this.My_matrix.get_place(y);
+			return Math.abs(new_x - this.My_matrix.getPac_x()) + Math.abs(new_y - this.My_matrix.getPac_y());
+		}
+		int score[] = { 1000, 1000, 1000, 1000 };
+
+		int min = 1000;
+		int dpt = depth - 1;
+
+		if (this.My_matrix.getwall(y, x + 20, y + 19, x + 20) && visited[dx+1][dy] != 1) {
+			score[0] = minScore(x + 20, y, dpt,);
+		}
+		if (this.My_matrix.getwall(y, x - 1, y + 19, x - 1)) {
+			score[1] = minScore(x - 20, y, dpt);
+
+		}
+		if (this.My_matrix.getwall(y - 1, x, y, x + 19)) {
+			score[2] = minScore(x, y - 20, dpt);
+		}
+		if (this.My_matrix.getwall(y + 20, x, y + 20, x + 19)) {
+			score[3] = minScore(x, y + 20, dpt);
+		}
+
+		for (int i = 0; i < 4; i++) {
+			if (score[i] < min) {
+				min = score[i];
+			}
+		}
+		return min;
+	}
+
+	public void run() {
+		int new_x;
+		int new_y;
+		while (true) {
+			new_x = this.My_matrix.get_place(this.x);
+			new_y = this.My_matrix.get_place(this.y);
+
+			int action = -1;
+			action = findNextAction(this.x, this.y, 3, this.x, this.y);
+			System.out.println(new_x + " " + new_y + " " + My_matrix.getPac_x() + " " + My_matrix.getPac_x()
+					+ Thread.currentThread().getName());
+
+			if (action == 0) {
+				right();
+				continue;
+			}
+			if (action == 1) {
+				left();
+				continue;
+			}
+			if (action == 2) {
+				down();
+				continue;
+			}
+			if (action == 3) {
+				up();
+				continue;
+			}
+			try {
+				Thread.sleep(this.time);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// p.repaint();
+		}
+	}
+
+}
